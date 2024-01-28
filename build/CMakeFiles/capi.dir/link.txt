@@ -1,1 +1,0 @@
-/usr/bin/c++  -fopenmp -rdynamic CMakeFiles/capi.dir/src/main.c.o -o capi  /home/justinfung/cpp_libs/ncnn_1005/build/install/lib/libncnn.a -lgomp -Wl,-Bstatic -lpthread -Wl,-Bdynamic 
