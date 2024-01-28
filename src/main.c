@@ -2,13 +2,18 @@
 #include "stdlib.h"
 #include "c_api.h"
 
+#include "detector.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#include "detector.h"
+// #define STB_DS_IMPLEMENTATION
+// #include "stb_ds.h"
+
+
 
 
 void print_mat(ncnn_mat_t *mat)
@@ -55,8 +60,23 @@ int main(int argc, char** argv)
      * 
      */
     Detector nanodet = create_nanodet(target_size);
-    nanodet.detect(pixels, width, height, &nanodet);
+    BoxInfo *objects = NULL;
+    nanodet.detect(pixels, width, height, objects, &nanodet);
     free(pixels);
 
+    // BoxInfo obj = objects[0];
+    // printf("%f %f %f %f %f %d\n", objects[0].x1, objects[0].x2, objects[0].y1, objects[0].y2, objects[0].prob, objects[0].label);
+
+
+    // BoxInfo *boxxes = NULL;
+    // BoxInfo xbox = {0,0,1,1,26, 0.8};
+
+    // stbds_arrput(boxxes, xbox);
+
+    // printf("%d %d %d %f ", boxxes[0].x1, boxxes[0].y1, boxxes[0].label, boxxes[0].prob);
+    // float trrr[] = {0.123, 1.1, -0.312, 0.9712, 1.12312, 2.112753, -2.123124, -0.128973};
+    // activation_function_softmax_inplace(&trrr, 8);
+
+    // printf("%f %f %f %f %f %f %f %f", trrr[0], trrr[1], trrr[2], trrr[3], trrr[4], trrr[5], trrr[6], trrr[7]);
     printf("\nC API TEST\n");
 }

@@ -1,17 +1,19 @@
 #pragma once
+#include "float.h"
 #include "c_api.h"
 
 typedef struct
 {
-    int x1;
-    int y1;
-    int x2;
-    int y2;
-    int label;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+    
     float prob;
+    int label;
 } BoxInfo;
 
-typedef BoxInfo* (*Detect) (unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr);
+typedef BoxInfo* (*Detect) (unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo *objects, void *self_ptr);
 
 typedef struct
 {
@@ -29,12 +31,17 @@ typedef struct
  * Todo -- General function that share with all detector
  */
 
+float fast_exp(float x);
+float fast_sigmoid(float x);
+float fast_tanh(float x);
+int activation_function_softmax_inplace(float *src, int length);
+
 /**
  * Todo -- Nanodet's widget
  */
 
 Detector create_nanodet(int input_size);
-BoxInfo *nanodet_detect(unsigned char *pixels, int input_w, int input_h, void *self_ptr);
+BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo *objects, void *self_ptr);
 
 
 /**
