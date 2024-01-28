@@ -8,6 +8,17 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+typedef struct
+{
+    int x1;
+    int x2;
+    int y1;
+    int y2;
+    int label;
+    float prob
+} BoxInfo;
+
+
 void print_mat(ncnn_mat_t *mat)
 {
     printf("w: %d\nh: %d\nc: %d\nelesize: %d\ncstep: %d\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
@@ -179,13 +190,5 @@ int main(int argc, char** argv)
 
     free(pixel);
 
-
-
-
-
-    // // printf("\nOutput matrix: \n");
-    // // printf("w: %d\nh: %d\nc: %d\nelesize: %d\ncstep: %d\n", ncnn_mat_get_w(out_mat), ncnn_mat_get_h(out_mat), ncnn_mat_get_c(out_mat), ncnn_mat_get_elemsize(out_mat), ncnn_mat_get_cstep(out_mat));
-    
-    // free(pixel);
-    // printf("C API TEST\n");
+    printf("\nC API TEST\n");
 }
