@@ -82,7 +82,10 @@ int main(int argc, char** argv)
     /**
      * Create the NCNN matirx using pixels data
      */
-    ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixel, NCNN_MAT_PIXEL_BGR, width, height, width * 3, w, h, ncnn_allocator_create_pool_allocator());
+
+    ncnn_allocator_t allocator = ncnn_allocator_create_pool_allocator();
+
+    ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixel, NCNN_MAT_PIXEL_BGR, width, height, width * 3, w, h, allocator);
     printf("Input matrix: \n");
     print_mat(mat);
 
@@ -167,6 +170,14 @@ int main(int argc, char** argv)
         ncnn_mat_destroy(out_mat_dis64);
         ncnn_mat_destroy(out_mat_cls64);
     }
+
+    // Clean up
+    ncnn_allocator_destroy(allocator);
+    ncnn_option_destroy(opt);
+    ncnn_extractor_destroy(ex);
+    ncnn_net_destroy(net);
+
+    free(pixel);
 
 
 
