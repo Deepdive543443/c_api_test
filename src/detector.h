@@ -11,7 +11,7 @@ typedef struct
     float prob;
 } BoxInfo;
 
-typedef BoxInfo (*Detect) (unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr);
+typedef BoxInfo* (*Detect) (unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr);
 
 typedef struct
 {
@@ -34,7 +34,7 @@ typedef struct
  */
 
 Detector create_nanodet(int input_size);
-BoxInfo nanodet_detect(unsigned char *pixels, int input_w, int input_h, void *self_ptr);
+BoxInfo *nanodet_detect(unsigned char *pixels, int input_w, int input_h, void *self_ptr);
 
 
 /**

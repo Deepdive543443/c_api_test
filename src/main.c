@@ -35,12 +35,7 @@ int main(int argc, char** argv)
     color.b = 24;
     color.a = 255;
 
-    BoxInfo ahhhhh;
-
     int target_size = 416;
-
-    const float mean_vals[] = {103.53f, 116.28f, 123.675f};
-    const float norm_vals[] = {1.f / 57.375f, 1.f / 57.12f, 1.f / 58.395f};
 
     // Allocate pixel
     // unsigned char *pixel = malloc(sizeof(unsigned char) * 320 * 320 * 3);
@@ -59,7 +54,7 @@ int main(int argc, char** argv)
      * Create nanodet
      * 
      */
-    Detector nanodet = create_nanodet(416);
+    Detector nanodet = create_nanodet(target_size);
     nanodet.detect(pixels, width, height, &nanodet);
     free(pixels);
 

@@ -1,7 +1,7 @@
 #include "detector.h"
 
 
-static BoxInfo generate_proposals(ncnn_mat_t mat_dis, ncnn_mat_t mat_cls, int stride);
+static BoxInfo generate_proposals(ncnn_mat_t mat_dis, ncnn_mat_t mat_cls, int stride, float thresh, BoxInfo *objects);
 
 
 Detector create_nanodet(int input_size)
@@ -26,9 +26,8 @@ Detector create_nanodet(int input_size)
 }
 
 
-BoxInfo nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr)
+BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr)
 {
-    BoxInfo output;
     Detector *self = (Detector *) self_ptr;
     
     int w, h;
@@ -52,9 +51,9 @@ BoxInfo nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *se
     printf("%d %d %f\n", w, h, scale);
     printf("%d %d\n", w + wpad, h + hpad);
 
-    // /**
-    //  * Create the NCNN matirx using pixels data
-    //  */
+    /**
+     * Create the NCNN matirx using pixels data
+     */
 
     ncnn_allocator_t allocator = ncnn_allocator_create_pool_allocator();
 
@@ -73,14 +72,8 @@ BoxInfo nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *se
     
 
     /**
-     * Create the network
-     * This part suppose to be in create function
+     * Create the extractor
      */
-    // ncnn_net_t net = ncnn_net_create();
-    // ncnn_net_load_param(net, "../asset/nanodet-plus-m_416_int8.param");
-    // ncnn_net_load_model(net, "../asset/nanodet-plus-m_416_int8.bin");
-    // ncnn_net_load_param(net, "../FastestDet.param");
-    // ncnn_net_load_model(net, "../FastestDet.bin");
 
     ncnn_extractor_t ex = ncnn_extractor_create(self->net);
     ncnn_extractor_input(ex, "data", mat_pad);
@@ -89,6 +82,7 @@ BoxInfo nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *se
      * Extract output from 4 scales
      */
 
+    BoxInfo *objects = malloc(sizeof(BoxInfo));
     const char* outputs[] = {"dis8", "cls8", "dis16", "cls16", "dis32", "cls32", "dis64", "cls64"};
     for (int i = 0;i < 8; i+=2)
     {
@@ -109,7 +103,8 @@ BoxInfo nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *se
     ncnn_allocator_destroy(allocator);
     ncnn_option_destroy(opt);
     ncnn_extractor_destroy(ex);
+    ncnn_mat_destroy(mat_pad);
     // ncnn_net_destroy(net);
 
-    return output;
+    return objects;
 }
