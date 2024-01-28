@@ -41,7 +41,9 @@ int main(int argc, char** argv)
     // unsigned char *pixel = malloc(sizeof(unsigned char) * 320 * 320 * 3);
     // memset(pixel, 255, 320 * 320 * 3); // White image 
 
-    // Load pixel from image
+    /**
+     * Load image using stb image
+     */
     int width, height, n;
     const char *file = "../asset/1.jpg";
     unsigned char *pixel = stbi_load(file, &width, &height, &n, 0);
@@ -52,7 +54,10 @@ int main(int argc, char** argv)
     // ncnn_draw_text_c3(pixel, width,  height, "Test label",200, 200, 7, (int) color.rgba);
     // stbi_write_png("test_output.png", width, height, n, pixel, width * 3);
 
-    // Create ncnn Matrix
+    /**
+     * Reshape and padding the matrix
+     * to the times of 32
+     */
     int w, h;
     float scale;
     if (width > height)
@@ -74,21 +79,26 @@ int main(int argc, char** argv)
     printf("%d %d %f\n", w, h, scale);
     printf("%d %d\n", w + wpad, h + hpad);
 
-    // ncnn_mat_t *mat = ncnn_mat_from_pixels(pixel, NCNN_MAT_PIXEL_BGR, 320, 320, 1, ncnn_allocator_create_pool_allocator());
+    /**
+     * Create the NCNN matirx using pixels data
+     */
     ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixel, NCNN_MAT_PIXEL_BGR, width, height, width * 3, w, h, ncnn_allocator_create_pool_allocator());
-    // // ncnn_mat_t *mat = ncnn_mat_create_3d(320, 320, 3, ncnn_allocator_create_pool_allocator());
     printf("Input matrix: \n");
     print_mat(mat);
 
     ncnn_mat_t mat_pad = ncnn_mat_create();
     ncnn_option_t opt = ncnn_option_create();
     ncnn_copy_make_border(mat, mat_pad, hpad / 2, hpad - hpad / 2, wpad / 2, wpad - wpad / 2, NCNN_BORDER_CONSTANT, 0.f, opt);
+    ncnn_mat_destroy(mat);
 
     ncnn_mat_substract_mean_normalize(mat_pad, mean_vals, norm_vals);
     printf("\nPadded input matrix: \n");
     print_mat(mat_pad);
+    
 
-    // Create network
+    /**
+     * Create the network
+     */
     ncnn_net_t *net = ncnn_net_create();
     ncnn_net_load_param(net, "../asset/nanodet-plus-m_416_int8.param");
     ncnn_net_load_model(net, "../asset/nanodet-plus-m_416_int8.bin");
@@ -96,18 +106,71 @@ int main(int argc, char** argv)
     // ncnn_net_load_model(net, "../FastestDet.bin");
 
     ncnn_extractor_t *ex = ncnn_extractor_create(net);
+    ncnn_extractor_input(ex, "data", mat_pad);
 
-    ncnn_mat_t out_mat_dis8;
-    ncnn_extractor_input(ex, "data", mat);
-    ncnn_extractor_extract(ex, "dis8", &out_mat_dis8);
-    printf("\nOutput matrix dis8: \n");
-    print_mat(out_mat_dis8);
+    /**
+     * Extract output from 4 scales
+     */
 
-    // ncnn_mat_t out_mat_dis16;
-    // ncnn_extractor_input(ex, "data", mat);
-    // ncnn_extractor_extract(ex, "dis16", &out_mat_dis16);
-    // printf("\nOutput matrix: \n");
-    // print_mat(out_mat_dis16);
+    {
+        ncnn_mat_t out_mat_dis8;
+        ncnn_mat_t out_mat_cls8;
+        ncnn_extractor_extract(ex, "dis8", &out_mat_dis8);
+        ncnn_extractor_extract(ex, "cls8", &out_mat_cls8);   
+        printf("\nOutput matrix dis8: \n");
+        print_mat(out_mat_dis8);
+        printf("Output matrix cls8: \n");
+        print_mat(out_mat_cls8);
+
+        ncnn_mat_destroy(out_mat_dis8);
+        ncnn_mat_destroy(out_mat_cls8);
+    }
+
+    {
+        ncnn_mat_t out_mat_dis16;
+        ncnn_mat_t out_mat_cls16;
+        ncnn_extractor_extract(ex, "dis16", &out_mat_dis16);
+        ncnn_extractor_extract(ex, "cls16", &out_mat_cls16);
+        printf("\nOutput matrix dis16: \n");
+        print_mat(out_mat_dis16);
+        printf("Output matrix cls16: \n");
+        print_mat(out_mat_cls16);
+
+        ncnn_mat_destroy(out_mat_dis16);
+        ncnn_mat_destroy(out_mat_cls16);
+    }
+
+    {
+        ncnn_mat_t out_mat_dis32;
+        ncnn_mat_t out_mat_cls32;
+        ncnn_extractor_extract(ex, "dis32", &out_mat_dis32);
+        ncnn_extractor_extract(ex, "cls32", &out_mat_cls32);
+        printf("\nOutput matrix dis32: \n");
+        print_mat(out_mat_dis32);
+        printf("Output matrix cls32: \n");
+        print_mat(out_mat_cls32);
+
+        ncnn_mat_destroy(out_mat_dis32);
+        ncnn_mat_destroy(out_mat_cls32);
+    }
+
+    {
+        ncnn_mat_t out_mat_dis64;
+        ncnn_mat_t out_mat_cls64;
+        ncnn_extractor_extract(ex, "dis64", &out_mat_dis64);
+        ncnn_extractor_extract(ex, "cls64", &out_mat_cls64);
+        printf("\nOutput matrix dis64: \n");
+        print_mat(out_mat_dis64);
+        printf("Output matrix cls64: \n");
+        print_mat(out_mat_cls64);
+
+        ncnn_mat_destroy(out_mat_dis64);
+        ncnn_mat_destroy(out_mat_cls64);
+    }
+
+
+
+
 
     // // printf("\nOutput matrix: \n");
     // // printf("w: %d\nh: %d\nc: %d\nelesize: %d\ncstep: %d\n", ncnn_mat_get_w(out_mat), ncnn_mat_get_h(out_mat), ncnn_mat_get_c(out_mat), ncnn_mat_get_elemsize(out_mat), ncnn_mat_get_cstep(out_mat));
