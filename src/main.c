@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "c_api.h"
 
-#include "detector.h"
+#include "detector/detector.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
