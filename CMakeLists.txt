@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.0.0)
 set (CMAKE_CXX_STANDARD 11)
 project(capi VERSION 0.1.0 LANGUAGES C CXX)
 
-add_subdirectory(src/detector)
 
+set(ncnn_DIR ../../../../cpp_libs/ncnn/build/install/lib/cmake/ncnn)
+add_subdirectory(src/detector)
 
 add_executable(capi src/main.c)
 target_include_directories(capi PRIVATE src)

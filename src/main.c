@@ -15,12 +15,6 @@
 
 
 
-
-void print_mat(ncnn_mat_t *mat)
-{
-    printf("w: %d\nh: %d\nc: %d\nelesize: %d\ncstep: %d\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
-}
-
 int main(int argc, char** argv)
 {
     // union 
@@ -65,36 +59,4 @@ int main(int argc, char** argv)
     free(pixels);
 
     printf("\nNANODET TEST\n\n");
-
-
-    /**
-     * CTest box array
-     * 
-     */
-
-    BoxVec boxVec;
-    create_box_vector(&boxVec, 10);
-    boxVec.pop(&boxVec);
-    // BoxVec_pop(&boxVec);
-    for (int i = 0; i < 20; i++)
-    {
-        BoxInfo box = {i,i,i,i,i,i};
-        // printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-        boxVec.push_back(box, &boxVec);
-        
-        printf("%d %d \n", boxVec.num_item, boxVec.capacity);
-
-    }
-
-    // Testing getItem
-    BoxInfo box;
-    box = boxVec.getItem(1, &boxVec);
-    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-    box = boxVec.getItem(54, &boxVec);
-    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-
-    box = boxVec.pop(&boxVec);
-    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-            printf("%d %d \n", boxVec.num_item, boxVec.capacity);
-    printf("\nC API TEST\n");
 }

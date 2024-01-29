@@ -7,8 +7,6 @@ file( GLOB LIB_SOURCES *.c )
 file( GLOB LIB_HEADERS *.h )
 add_library( detkit ${LIB_SOURCES} ${LIB_HEADERS} )
 
-
-set(ncnn_DIR ../../../../cpp_libs/ncnn-20240102-full-source/build/install/lib/cmake/ncnn)
 find_package(ncnn REQUIRED)
 target_link_libraries(detkit ncnn)
 

@@ -3,6 +3,12 @@
 // #define STB_DS_IMPLEMENTATION
 // #include "stb_ds.h"
 
+void print_mat(ncnn_mat_t mat)
+{
+    // printf("w: %d\n", ncnn_mat_get_w(mat[0]));
+    printf("w: %d\nh: %d\nc: %d\nelesize: %ld\ncstep: %ld\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
+}
+
 static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int stride, float prob_thresh, BoxInfo *objects)
 {
     const int num_grid_x = ncnn_mat_get_w(cls_pred);
@@ -162,10 +168,10 @@ BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo
         ncnn_mat_t out_mat_cls;
         ncnn_extractor_extract(ex, outputs[i * 2], &out_mat_dis);
         ncnn_extractor_extract(ex, outputs[i * 2 + 1], &out_mat_cls);   
-        // printf("\nOutput matrix(%s): \n", outputs[i * 2]);
-        // print_mat(out_mat_dis);
-        // printf("Output matrix(%s): \n", outputs[i * 2 + 1]);
-        // print_mat(out_mat_cls);
+        printf("\nOutput matrix(%s): \n", outputs[i * 2]);
+        print_mat(out_mat_dis);
+        printf("Output matrix(%s): \n", outputs[i * 2 + 1]);
+        print_mat(out_mat_cls);
 
         generate_proposals(out_mat_dis, out_mat_cls, strides[i], 0.4, objects); // prob thresh 0.4
 
