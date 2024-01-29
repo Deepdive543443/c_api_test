@@ -114,6 +114,17 @@ const int color_list[80][3] =
 
 int main(int argc, char** argv)
 {
+        union 
+    {
+        struct
+        {
+            __uint8_t r;
+            __uint8_t g;
+            __uint8_t b;
+            __uint8_t a;
+        };
+        __uint32_t rgba;
+    } color;
     int target_size = 416;
 
     // Allocate pixel
@@ -124,7 +135,7 @@ int main(int argc, char** argv)
      * Load image using stb image
      */
     int width, height, n;
-    const char *file = "../asset/1.jpg";
+    const char *file = "../asset/3.jpg";
     unsigned char *pixels = stbi_load(file, &width, &height, &n, 0);
     printf("%d %d %d\n", width, height, n);
 
@@ -141,12 +152,26 @@ int main(int argc, char** argv)
     {
         BoxInfo box = objects.getItem(i, &objects);
         printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-        // ncnn_draw_rectangle_c3(
-        //     unsigned char* pixels, int w, int h, int rx, int ry, int rw, int rh, unsigned int color, int thickness
-        // );
-        // ncnn_draw_text_c3
+        color.r = color_list[i][0];
+        color.g = color_list[i][1];
+        color.b = color_list[i][2];
+        color.a = 255;
+        ncnn_draw_rectangle_c3(
+            pixels, width, height, box.x1, box.y1, box.x2 - box.x1, box.y2 - box.y1, color.rgba, 3
+        );
+        ncnn_draw_text_c3(
+            pixels,
+            width, 
+            height, 
+            class_names[box.label],
+            (int) box.x1 + 1, 
+            (int) box.y1 + 1,
+            7,
+            (int) color.rgba
+        );
     }
-    // free(pixels);
+    stbi_write_png("test_output.png", width, height, 3, pixels, width * 3);
+    free(pixels);
 
     printf("\nNANODET TEST\n\n");
 }
