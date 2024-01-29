@@ -23,24 +23,22 @@ int main(int argc, char** argv)
     boxVec.remove(19, &boxVec); printf("%ld %ld \n", boxVec.num_item, boxVec.capacity);
     boxVec.remove(7, &boxVec); printf("%ld %ld \n", boxVec.num_item, boxVec.capacity);
     
-    // boxVec.remove(7, &boxVec);
-    
+    // Testing insert
+    for (int i=0; i < 20; i++)
+    {
+        int temp = i + 30;
+        BoxInfo box = {temp,temp, temp, temp, temp, temp };
+        boxVec.insert(box, 5, &boxVec);
+        printf("%ld %ld \n", boxVec.num_item, boxVec.capacity);
+    }
 
     // Testing getItem
     BoxInfo box;
     for (int i=0; i < boxVec.num_item; i++)
     {
+   
+        BoxInfo box = {i,i,i,i,i,i};
         box = boxVec.getItem(i, &boxVec);
         printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
     }
-
-    box = boxVec.getItem(1, &boxVec);
-    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-    box = boxVec.getItem(54, &boxVec);
-    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-
-    // box = boxVec.pop(&boxVec);
-    // printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-    // printf("%ld %ld \n", boxVec.num_item, boxVec.capacity);
-    // printf("\nC API TEST\n");
 }

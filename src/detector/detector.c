@@ -12,7 +12,7 @@ void create_box_vector(BoxVec *box_vector, size_t capacity)
     box_vector->pop = &BoxVec_pop;
     box_vector->remove = &BoxVec_remove;
     box_vector->push_back = &BoxVec_push_back;
-    // box_vector.insert = &BoxVec_insert;
+    box_vector->insert = &BoxVec_insert;
 }
 
 BoxInfo BoxVec_getItem(size_t index, void *self_ptr)
@@ -59,9 +59,9 @@ BoxInfo BoxVec_remove(size_t index, void *self_ptr)
         BoxInfo empty = boxVec->data[index];
         BoxInfo temp[num_to_copy];
 
-        memcpy(&temp, &boxVec->data[index + 1], num_to_copy);
-        memset(&boxVec->data[index], 0.0, num_to_copy + 1);
-        memcpy(&boxVec->data[index], &temp, num_to_copy);
+        memcpy(&temp, &boxVec->data[index + 1], sizeof(BoxInfo) * num_to_copy);
+        memset(&boxVec->data[index], 0.0, sizeof(BoxInfo) * num_to_copy + 1);
+        memcpy(&boxVec->data[index], &temp, sizeof(BoxInfo) * num_to_copy);
 
         boxVec->num_item--;
         return empty;
@@ -100,7 +100,38 @@ void BoxVec_push_back(BoxInfo item, void *self_ptr)
     }
 }
 
-/*TODO -- BoxVec_insert*/
+void BoxVec_insert(BoxInfo item, size_t index, void *self_ptr)
+{
+    BoxVec *boxVec = (BoxVec *) self_ptr;
+    if (index == boxVec->num_item)
+    {
+        boxVec->push_back(item, self_ptr);
+        return;
+    }
+
+    if (boxVec->capacity == boxVec->num_item)
+    {
+        void *data_ptr = realloc(boxVec->data, sizeof(BoxInfo) * (boxVec->capacity + 20));
+        if (data_ptr == NULL)
+        {
+            printf("Ran out of mem\n");
+            return;
+        }
+        else
+        {
+            boxVec->data = (BoxInfo *) data_ptr;
+            boxVec->capacity += 20;
+        }
+    }
+
+    int num_to_copy = boxVec->num_item - index;
+    BoxInfo temp[num_to_copy];
+
+    memcpy(&temp, &boxVec->data[index], sizeof(BoxInfo) * num_to_copy);
+    boxVec->data[index] = item;
+    memcpy(&boxVec->data[index+1], &temp, sizeof(BoxInfo) * num_to_copy);
+    boxVec->num_item++;
+}
 
 
 float fast_exp(float x)
