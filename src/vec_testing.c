@@ -42,8 +42,11 @@ int main(int argc, char** argv)
         printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
     }
 
+    // Test fit size
+    boxVec.fit(&boxVec);
+
     //Test free
-    boxVec.free(&boxVec);
+    boxVec.free(&boxVec); printf("%ld %ld \n", boxVec.num_item, boxVec.capacity);
 
     printf("Box Vec Test\n");
 }

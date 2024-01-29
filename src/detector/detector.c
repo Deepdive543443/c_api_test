@@ -13,6 +13,7 @@ void create_box_vector(BoxVec *box_vector, size_t capacity)
     box_vector->remove = &BoxVec_remove;
     box_vector->push_back = &BoxVec_push_back;
     box_vector->insert = &BoxVec_insert;
+    box_vector->fit = &BoxVec_fit_size;
     box_vector->free = &BoxVec_free;
 }
 
@@ -132,6 +133,22 @@ void BoxVec_insert(BoxInfo item, size_t index, void *self_ptr)
     boxVec->data[index] = item;
     memcpy(&boxVec->data[index+1], &temp, sizeof(BoxInfo) * num_to_copy);
     boxVec->num_item++;
+}
+
+void BoxVec_fit_size(void *self_ptr)
+{
+    BoxVec *boxVec = (BoxVec *) self_ptr;
+    void *data_ptr = realloc(boxVec->data, sizeof(BoxInfo) * (boxVec->num_item));
+    if (data_ptr == NULL)
+    {
+        printf("Ran out of mem\n");
+        return;
+    }
+    else
+    {
+        boxVec->data = (BoxInfo *) data_ptr;
+        boxVec->capacity = boxVec->num_item;
+    }
 }
 
 void BoxVec_free(void *self_ptr)
