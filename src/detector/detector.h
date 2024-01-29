@@ -2,6 +2,8 @@
 #include "float.h"
 #include "stdlib.h"
 #include "string.h"
+#include "math.h"
+
 #include "c_api.h"
 
 
@@ -81,6 +83,7 @@ float fast_tanh(float x);
 int activation_function_softmax_inplace(float *src, int length);
 
 void qsort_descent_inplace(BoxVec *objects, int left, int right);
+float intersection(BoxInfo *box1, BoxInfo *box2);
 
 /**
  * Todo -- Nanodet's modules

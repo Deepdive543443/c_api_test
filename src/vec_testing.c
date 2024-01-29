@@ -48,5 +48,15 @@ int main(int argc, char** argv)
     //Test free
     boxVec.free(&boxVec); printf("%ld %ld \n", boxVec.num_item, boxVec.capacity);
 
+    //Test intersection
+    BoxInfo box1 = {10,10,20,20,23,12};
+    BoxInfo box2 = {15,15,20,20,23,12};
+    BoxInfo box3 = {20,20,30,30,23,12};
+
+    intersection(&box1, &box2);
+
+    printf("%f %f %f %f %f %d\n", box1.x1, box1.x2, box1.y1, box1.y2, box1.prob, box1.label);
+    printf("%f %f \n", intersection(&box1, &box2), intersection(&box2, &box3));
+
     printf("Box Vec Test\n");
 }

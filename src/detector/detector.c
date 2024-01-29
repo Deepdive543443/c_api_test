@@ -240,3 +240,13 @@ void qsort_descent_inplace(BoxVec *objects, int left, int right)
         }
     }
 }
+
+float intersection(BoxInfo *box1, BoxInfo *box2)
+{
+    float xA = fmaxf(box1->x1, box2->x1);
+    float yA = fmaxf(box1->y1, box2->y1);
+    float xB = fminf(box1->x2, box2->x2);
+    float yB = fminf(box1->y2, box2->y2);
+
+    return fmaxf(0, xB - xA) * fmaxf(0, yB - yA);
+}
