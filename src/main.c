@@ -114,23 +114,6 @@ const int color_list[80][3] =
 
 int main(int argc, char** argv)
 {
-    // union 
-    // {
-    //     struct
-    //     {
-    //         __uint8_t r;
-    //         __uint8_t g;
-    //         __uint8_t b;
-    //         __uint8_t a;
-    //     };
-    //     __uint32_t rgba;
-    // } color;
-
-    // color.r = 216;
-    // color.g = 82;
-    // color.b = 24;
-    // color.a = 255;
-
     int target_size = 416;
 
     // Allocate pixel
@@ -151,16 +134,17 @@ int main(int argc, char** argv)
      * 
      */
     Detector nanodet = create_nanodet(target_size);
-    // BoxVec objects = NULL; // Dynamic array doesn't work for now, waiting for an implementation
     BoxVec objects = nanodet.detect(pixels, width, height, &nanodet);
-    // printf("\nnum_item: %ld capacity: %ld\n", objects.num_item, objects.capacity);
 
     printf("Detected %ld items: \n", objects.num_item);
     for (int i=0; i < objects.num_item; i++)
     {
         BoxInfo box = objects.getItem(i, &objects);
         printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
-
+        // ncnn_draw_rectangle_c3(
+        //     unsigned char* pixels, int w, int h, int rx, int ry, int rw, int rh, unsigned int color, int thickness
+        // );
+        // ncnn_draw_text_c3
     }
     // free(pixels);
 

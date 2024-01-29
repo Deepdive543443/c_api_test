@@ -187,7 +187,18 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
     
     for (int i=0; i < num_picked; i++)
     {
-        objects.push_back(proposals.getItem(i, &proposals), &objects);
+        BoxInfo box = proposals.getItem(i, &proposals);
+        box.x1 /= scale;
+        box.x2 /= scale;
+        box.y1 /= scale;
+        box.y2 /= scale;
+
+        box.x1 = fmaxf(fminf(box.x1, (float)(pixel_w - 1)), 0.f);
+        box.y1 = fmaxf(fminf(box.y1, (float)(pixel_h - 1)), 0.f);
+        box.x2 = fmaxf(fminf(box.x2, (float)(pixel_w - 1)), 0.f);
+        box.y2 = fmaxf(fminf(box.y2, (float)(pixel_h - 1)), 0.f);
+
+        objects.push_back(box, &objects);
     }
 
     // Clean up
