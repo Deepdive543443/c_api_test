@@ -9,7 +9,7 @@ void print_mat(ncnn_mat_t mat)
     printf("w: %d\nh: %d\nc: %d\nelesize: %ld\ncstep: %ld\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
 }
 
-static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int stride, float prob_thresh, BoxInfo *objects)
+static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int stride, float prob_thresh, BoxVec *objects)
 {
     const int num_grid_x = ncnn_mat_get_w(cls_pred);
     const int num_grid_y = ncnn_mat_get_h(cls_pred);
@@ -69,7 +69,8 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                 obj.y2 = y_center + pred_ltrb[3];
                 obj.prob = max_score;
                 obj.label = max_label;
-                printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
+                // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
+                objects->push_back(obj, objects);
 
                 // arrput(objects, obj);
             }
@@ -103,7 +104,7 @@ Detector create_nanodet(int input_size)
 }
 
 
-BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo *objects, void *self_ptr)
+BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr)
 {
     Detector *self = (Detector *) self_ptr;
     
@@ -159,7 +160,8 @@ BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo
      * Extract output from 4 scales
      */
 
-    // BoxInfo *objects = malloc(sizeof(BoxInfo));
+    BoxVec objects;
+    create_box_vector(&objects, 50);
     const char* outputs[] = {"dis8", "cls8", "dis16", "cls16", "dis32", "cls32", "dis64", "cls64"};
     int strides[] = {8, 16, 32, 64};
     for (int i = 0;i < 4; i++)
@@ -173,7 +175,7 @@ BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo
         printf("Output matrix(%s): \n", outputs[i * 2 + 1]);
         print_mat(out_mat_cls);
 
-        generate_proposals(out_mat_dis, out_mat_cls, strides[i], 0.4, objects); // prob thresh 0.4
+        generate_proposals(out_mat_dis, out_mat_cls, strides[i], 0.4, &objects); // prob thresh 0.4
 
         ncnn_mat_destroy(out_mat_dis);
         ncnn_mat_destroy(out_mat_cls);

@@ -57,7 +57,7 @@ void BoxVec_fit_size(void *self_ptr);
  * Detector modules
  */
 
-typedef BoxInfo* (*Detect) (unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo *objects, void *self_ptr);
+typedef BoxVec (*detect_func_ptr) (unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr);
 
 typedef struct
 {
@@ -66,7 +66,7 @@ typedef struct
     int input_size;
     float mean_vals[3];
     float norm_vals[3];
-    Detect detect;
+    detect_func_ptr detect;
 } Detector;
 
 
@@ -85,7 +85,7 @@ int activation_function_softmax_inplace(float *src, int length);
  */
 
 Detector create_nanodet(int input_size);
-BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo *objects, void *self_ptr);
+BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr);
 
 
 /**
