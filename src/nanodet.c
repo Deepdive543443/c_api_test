@@ -16,7 +16,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
     float *cls_data = (float *) ncnn_mat_get_data(cls_pred);
     float *dis_data = (float *) ncnn_mat_get_data(dis_pred);        
 
-    printf("num_grid_x, %d num_grid_y, %d num_class, %d cstep_cls, %d reg_max_1, %d hstep_dis, %d\n", num_grid_x, num_grid_y, num_class, cstep_cls, reg_max_1, hstep_dis);
+    // printf("num_grid_x, %d num_grid_y, %d num_class, %d cstep_cls, %d reg_max_1, %d hstep_dis, %d\n", num_grid_x, num_grid_y, num_class, cstep_cls, reg_max_1, hstep_dis);
 
     for (int i=0; i < num_grid_y; i++)
     {
@@ -40,7 +40,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
             {
                 float pred_ltrb[4];
                 float *dis_ptr = &dis_data[(j * num_grid_y) + (i * hstep_dis)];
-                for (int dis=0; dis < 4; dis++)
+                for (int k=0; k < 4; k++)
                 {
                     float dis = 0.f;
                     activation_function_softmax_inplace(dis_ptr, 8);
@@ -48,8 +48,9 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                     {
                         dis += reg * dis_ptr[reg];
                     }
+                    pred_ltrb[k] = dis * stride;
                     
-                    dis_ptr += 4;
+                    dis_ptr += reg_max_1;
                 }
 
                 float x_center = j * stride;
@@ -62,11 +63,15 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                 obj.y2 = y_center + pred_ltrb[3];
                 obj.prob = max_score;
                 obj.label = max_label;
+                printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
 
-                stbds_arrput(objects, obj);
+                arrput(objects, obj);
             }
         }
     }
+
+    // BoxInfo obj = objects[0];
+    // printf("%f %f %f %f %f %d\n", objects[0].x1, objects[0].x2, objects[0].y1, objects[0].y2, objects[0].prob, objects[0].label);
 }
 
 
@@ -174,6 +179,9 @@ BoxInfo *nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo
     ncnn_extractor_destroy(ex);
     ncnn_mat_destroy(mat_pad);
     // ncnn_net_destroy(net);
+
+    // BoxInfo obj = objects[3];
+    // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
 
     return objects;
 }

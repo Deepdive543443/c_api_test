@@ -64,8 +64,8 @@ int main(int argc, char** argv)
     nanodet.detect(pixels, width, height, objects, &nanodet);
     free(pixels);
 
-    // BoxInfo obj = objects[0];
-    // printf("%f %f %f %f %f %d\n", objects[0].x1, objects[0].x2, objects[0].y1, objects[0].y2, objects[0].prob, objects[0].label);
+    BoxInfo obj = objects[0];
+    printf("%f %f %f %f %f %d\n", objects[0].x1, objects[0].x2, objects[0].y1, objects[0].y2, objects[0].prob, objects[0].label);
 
 
     // BoxInfo *boxxes = NULL;
