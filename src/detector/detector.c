@@ -10,7 +10,7 @@ void create_box_vector(BoxVec *box_vector, size_t capacity)
 
     box_vector->getItem = &BoxVec_getItem;
     box_vector->pop = &BoxVec_pop;
-    // box_vector.remove = &BoxVec_remove;
+    box_vector->remove = &BoxVec_remove;
     box_vector->push_back = &BoxVec_push_back;
     // box_vector.insert = &BoxVec_insert;
 }
@@ -24,7 +24,7 @@ BoxInfo BoxVec_getItem(size_t index, void *self_ptr)
     }
     else
     {
-        printf("Index out of range\n");
+        printf("Index:%ld out of range\n", index);
         return boxVec->data[boxVec->num_item - 1];
     }
 
@@ -33,7 +33,6 @@ BoxInfo BoxVec_getItem(size_t index, void *self_ptr)
 BoxInfo BoxVec_pop(void *self_ptr)
 {
     BoxVec *boxVec = (BoxVec *) self_ptr;
-    // size_t num_item = boxVec->num_item;
     BoxInfo empty_box;
     
     if(boxVec->num_item > 0)
@@ -49,7 +48,31 @@ BoxInfo BoxVec_pop(void *self_ptr)
     }
 }
 
-/*TODO -- BoxVec_remove*/
+BoxInfo BoxVec_remove(size_t index, void *self_ptr)
+{
+    BoxVec *boxVec = (BoxVec *) self_ptr;
+    BoxInfo empty;
+
+    if (index < boxVec->num_item - 1 && index >= 0)
+    {
+        int num_to_copy = boxVec->num_item - index + 1;
+        BoxInfo empty = boxVec->data[index];
+        BoxInfo temp[num_to_copy];
+
+        memcpy(&temp, &boxVec->data[index + 1], num_to_copy);
+        memset(&boxVec->data[index], 0.0, num_to_copy + 1);
+        memcpy(&boxVec->data[index], &temp, num_to_copy);
+
+        boxVec->num_item--;
+        return empty;
+    }
+    else if (index == boxVec->num_item - 1)
+    {
+        return boxVec->pop(self_ptr);
+    }
+    printf("Index:%ld out of range\n", index);
+    return empty;
+}
 
 void BoxVec_push_back(BoxInfo item, void *self_ptr)
 {
