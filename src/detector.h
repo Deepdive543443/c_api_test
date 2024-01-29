@@ -13,6 +13,22 @@ typedef struct
     int label;
 } BoxInfo;
 
+
+/**
+ * @here we go again https://stackoverflow.com/questions/4694401/how-to-replicate-vector-in-c
+ * TODO -- Get this vector of boxxes done
+ */
+typedef struct
+{
+    BoxInfo *data;
+    size_t capacity;
+    size_t num_item;
+} BoxVec;
+
+BoxVec create_box_vector();
+void BoxVec_push_back();
+void BoxVec_insert();
+
 typedef BoxInfo* (*Detect) (unsigned char *pixels, int pixel_w, int pixel_h, BoxInfo *objects, void *self_ptr);
 
 typedef struct
