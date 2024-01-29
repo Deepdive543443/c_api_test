@@ -74,7 +74,8 @@ int main(int argc, char** argv)
 
     BoxVec boxVec;
     create_box_vector(&boxVec, 10);
-    BoxVec_pop(&boxVec);
+    boxVec.pop(&boxVec);
+    // BoxVec_pop(&boxVec);
     for (int i = 0; i < 20; i++)
     {
         BoxInfo box = {i,i,i,i,i,i};
@@ -92,5 +93,8 @@ int main(int argc, char** argv)
     box = boxVec.getItem(54, &boxVec);
     printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
 
+    box = boxVec.pop(&boxVec);
+    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+            printf("%d %d \n", boxVec.num_item, boxVec.capacity);
     printf("\nC API TEST\n");
 }

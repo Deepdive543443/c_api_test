@@ -9,7 +9,7 @@ void create_box_vector(BoxVec *box_vector, size_t capacity)
     box_vector->data = (BoxInfo *) malloc(sizeof(BoxInfo) * capacity);
 
     box_vector->getItem = &BoxVec_getItem;
-    // box_vector.pop = &BoxVec_pop;
+    box_vector->pop = &BoxVec_pop;
     // box_vector.remove = &BoxVec_remove;
     box_vector->push_back = &BoxVec_push_back;
     // box_vector.insert = &BoxVec_insert;
@@ -33,12 +33,13 @@ BoxInfo BoxVec_getItem(size_t index, void *self_ptr)
 BoxInfo BoxVec_pop(void *self_ptr)
 {
     BoxVec *boxVec = (BoxVec *) self_ptr;
-    size_t num_item = boxVec->num_item;
+    // size_t num_item = boxVec->num_item;
     BoxInfo empty_box;
     
-    if(num_item > 0)
+    if(boxVec->num_item > 0)
     {
-        BoxInfo empty_box = boxVec->data[num_item - 1];
+        BoxInfo empty_box = boxVec->data[boxVec->num_item - 1];
+        boxVec->num_item--;
         return empty_box;
     }
     else
