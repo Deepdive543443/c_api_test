@@ -5,7 +5,6 @@
 
 void print_mat(ncnn_mat_t mat)
 {
-    // printf("w: %d\n", ncnn_mat_get_w(mat[0]));
     printf("w: %d\nh: %d\nc: %d\nelesize: %ld\ncstep: %ld\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
 }
 
@@ -21,8 +20,6 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
 
     float *cls_data = (float *) ncnn_mat_get_data(cls_pred);
     float *dis_data = (float *) ncnn_mat_get_data(dis_pred);        
-
-    // printf("num_grid_x, %d num_grid_y, %d num_class, %d cstep_cls, %d reg_max_1, %d hstep_dis, %d\n", num_grid_x, num_grid_y, num_class, cstep_cls, reg_max_1, hstep_dis);
 
     for (int i=0; i < num_grid_y; i++)
     {
@@ -69,10 +66,8 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                 obj.y2 = y_center + pred_ltrb[3];
                 obj.prob = max_score;
                 obj.label = max_label;
-                // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
-                objects->push_back(obj, objects);
 
-                // arrput(objects, obj);
+                objects->push_back(obj, objects);
             }
         }
     }
@@ -181,6 +176,14 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
         ncnn_mat_destroy(out_mat_cls);
     }
 
+    objects.fit(&objects);
+
+    if (objects.num_item > 2)
+    {
+        qsort_descent_inplace(&objects, 0, objects.num_item - 1);
+    }
+
+
     // Clean up
     ncnn_allocator_destroy(allocator);
     ncnn_option_destroy(opt);
@@ -191,5 +194,6 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
     // BoxInfo obj = objects[3];
     // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
 
+    // objects.fit(&objects);
     return objects;
 }

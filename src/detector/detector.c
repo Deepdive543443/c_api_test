@@ -200,3 +200,43 @@ int activation_function_softmax_inplace(float *src, int length)
     }
     return 0;
 }
+
+void qsort_descent_inplace(BoxVec *objects, int left, int right)
+{
+    int i = left;
+    int j = right;
+
+    float p = objects->getItem((int) (left + right) / 2, objects).prob;
+
+    while (i <= j)
+    {
+        while (objects->getItem(i, objects).prob > p)//(objects[i].prob > p)
+            i++;
+
+        while (objects->getItem(j, objects).prob < p)
+            j--;
+
+        if (i <= j)
+        {
+            // swap
+            BoxInfo temp = objects->getItem(i, objects);
+            memcpy(&objects->data[i], &objects->data[j], sizeof(BoxInfo));
+            objects->data[j] = temp;
+
+            i++;
+            j--;
+        }
+    }
+
+    #pragma omp parallel sections
+    {
+        #pragma omp section
+        {
+            if (left < j) qsort_descent_inplace(objects, left, j);
+        }
+        #pragma omp section
+        {
+            if (i < right) qsort_descent_inplace(objects, i, right);
+        }
+    }
+}
