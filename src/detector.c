@@ -1,5 +1,74 @@
 #include "detector.h"
 
+void create_box_vector(BoxVec *box_vector, size_t capacity)
+{
+    // BoxVec box_vector;
+    box_vector->self = &box_vector;
+    box_vector->capacity = capacity;
+    box_vector->num_item = 0;
+    box_vector->data = (BoxInfo *) malloc(sizeof(BoxInfo) * capacity);
+
+    box_vector->getItem = &BoxVec_getItem;
+    // box_vector.pop = &BoxVec_pop;
+    // box_vector.remove = &BoxVec_remove;
+    box_vector->push_back = &BoxVec_push_back;
+    // box_vector.insert = &BoxVec_insert;
+}
+
+BoxInfo BoxVec_getItem(size_t index, void *self_ptr)
+{
+    BoxVec *boxVec = (BoxVec *) self_ptr;
+    // BoxInfo *data = (BoxInfo *) boxVec->data;
+    return boxVec->data[index];
+}
+
+BoxInfo BoxVec_pop(void *self_ptr)
+{
+    BoxVec *boxVec = (BoxVec *) self_ptr;
+    size_t num_item = boxVec->num_item;
+    BoxInfo empty_box;
+    
+    if(num_item > 0)
+    {
+        BoxInfo empty_box = boxVec->data[num_item - 1];
+        return empty_box;
+    }
+    else
+    {
+        printf("No box in vector\n");
+        return empty_box;
+    }
+}
+
+/*TODO*/
+
+void BoxVec_push_back(BoxInfo item, void *self_ptr)
+{
+    BoxVec *boxVec = (BoxVec *) self_ptr;
+    size_t num_item = boxVec->num_item;
+    if (boxVec->capacity == boxVec->num_item)
+    {
+        void *data_ptr = realloc(boxVec->data, boxVec->capacity * 2);
+        if (data_ptr == NULL)
+        {
+            printf("Ran out of mem\n");
+        }
+        else
+        {
+            boxVec->data = (BoxInfo *) data_ptr;
+            boxVec->data[boxVec->num_item] = item;
+            boxVec->capacity *= 2;
+            boxVec->num_item++;
+        }
+    }
+    else if (boxVec->capacity > boxVec->num_item)
+    {
+        boxVec->data[boxVec->num_item] = item;
+        boxVec->num_item++;
+    }
+}
+
+
 float fast_exp(float x)
 {
     union {

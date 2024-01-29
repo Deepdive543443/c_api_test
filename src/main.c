@@ -46,23 +46,50 @@ int main(int argc, char** argv)
     // unsigned char *pixel = malloc(sizeof(unsigned char) * 320 * 320 * 3);
     // memset(pixel, 255, 320 * 320 * 3); // White image 
 
-    /**
-     * Load image using stb image
-     */
-    int width, height, n;
-    const char *file = "../asset/1.jpg";
-    unsigned char *pixels = stbi_load(file, &width, &height, &n, 0);
-    printf("%d %d %d\n", width, height, n);
+    // /**
+    //  * Load image using stb image
+    //  */
+    // int width, height, n;
+    // const char *file = "../asset/1.jpg";
+    // unsigned char *pixels = stbi_load(file, &width, &height, &n, 0);
+    // printf("%d %d %d\n", width, height, n);
+
+
+    // /**
+    //  * Create nanodet
+    //  * 
+    //  */
+    // Detector nanodet = create_nanodet(target_size);
+    // BoxInfo *objects = NULL; // Dynamic array doesn't work for now, waiting for an implementation
+    // nanodet.detect(pixels, width, height, objects, &nanodet);
+    // free(pixels);
 
 
     /**
-     * Create nanodet
+     * CTest box array
      * 
      */
-    Detector nanodet = create_nanodet(target_size);
-    BoxInfo *objects = NULL; // Dynamic array doesn't work for now, waiting for an implementation
-    nanodet.detect(pixels, width, height, objects, &nanodet);
-    free(pixels);
+
+    BoxVec boxVec;
+    create_box_vector(&boxVec, 20);
+    for (int i = 0; i < 20; i++)
+    {
+        BoxInfo box = {i,i,i,i,i,i};
+        printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+
+        boxVec.push_back(box, &boxVec);
+        // printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+
+    }
+
+    BoxInfo box;
+    box = boxVec.getItem(1, &boxVec);
+    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+    box = boxVec.getItem(12, &boxVec);
+    printf("\n%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+
+
+
     
 
     // BoxInfo obj = objects[0];

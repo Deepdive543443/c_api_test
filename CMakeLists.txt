@@ -7,7 +7,7 @@ file(GLOB SOURCES src/*)
 add_executable(capi ${SOURCES})
 target_include_directories(capi PRIVATE src)
 
-set(ncnn_DIR ../../cpp_libs/ncnn/build/install/lib/cmake/ncnn)
+set(ncnn_DIR ../../cpp_libs/ncnn-20240102-full-source/build/install/lib/cmake/ncnn)
 find_package(ncnn REQUIRED)
 target_link_libraries(capi ncnn)
 

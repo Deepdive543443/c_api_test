@@ -1,7 +1,7 @@
 #include "detector.h"
 
-#define STB_DS_IMPLEMENTATION
-#include "stb_ds.h"
+// #define STB_DS_IMPLEMENTATION
+// #include "stb_ds.h"
 
 static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int stride, float prob_thresh, BoxInfo *objects)
 {
@@ -65,7 +65,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                 obj.label = max_label;
                 printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
 
-                arrput(objects, obj);
+                // arrput(objects, obj);
             }
         }
     }
@@ -78,7 +78,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
 Detector create_nanodet(int input_size)
 {
     Detector nanodet;
-    nanodet.self = &nanodet;
+    // nanodet.self = &nanodet;
 
     nanodet.net = ncnn_net_create();
     ncnn_net_load_param(nanodet.net, "../asset/nanodet-plus-m_416_int8.param");
