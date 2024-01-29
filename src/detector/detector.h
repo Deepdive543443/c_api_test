@@ -26,6 +26,7 @@ typedef BoxInfo (*pop_func_ptr) (void *self_ptr);
 typedef BoxInfo (*remove_func_ptr) (size_t index, void *self_ptr);
 typedef void (*push_back_func_ptr) (BoxInfo item, void *self_ptr);
 typedef void (*insert_func_ptr) (BoxInfo item, size_t index, void *self_ptr);
+typedef void (*free_func_ptr) (void *self_ptr);
 
 typedef struct
 {
@@ -38,6 +39,7 @@ typedef struct
     remove_func_ptr remove;
     push_back_func_ptr push_back;
     insert_func_ptr insert;
+    free_func_ptr free;
 } BoxVec;
 
 void create_box_vector(BoxVec *box_vector, size_t capacity);
@@ -46,6 +48,7 @@ BoxInfo BoxVec_pop(void *self_ptr);
 BoxInfo BoxVec_remove(size_t index, void *self_ptr);
 void BoxVec_push_back(BoxInfo item, void *self_ptr);
 void BoxVec_insert(BoxInfo item, size_t index, void *self_ptr);
+void BoxVec_free(void *self_ptr);
 
 /**
  * Detector modules

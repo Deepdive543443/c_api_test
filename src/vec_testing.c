@@ -41,4 +41,9 @@ int main(int argc, char** argv)
         box = boxVec.getItem(i, &boxVec);
         printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
     }
+
+    //Test free
+    boxVec.free(&boxVec);
+
+    printf("Box Vec Test\n");
 }
