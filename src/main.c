@@ -56,15 +56,16 @@ int main(int argc, char** argv)
     Detector nanodet = create_nanodet(target_size);
     // BoxVec objects = NULL; // Dynamic array doesn't work for now, waiting for an implementation
     BoxVec objects = nanodet.detect(pixels, width, height, &nanodet);
-    printf("\nnum_item: %ld capacity: %ld\n", objects.num_item, objects.capacity);
+    // printf("\nnum_item: %ld capacity: %ld\n", objects.num_item, objects.capacity);
 
+    printf("Detected %ld items: \n", objects.num_item);
     for (int i=0; i < objects.num_item; i++)
     {
         BoxInfo box = objects.getItem(i, &objects);
         printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
 
     }
-    free(pixels);
+    // free(pixels);
 
     printf("\nNANODET TEST\n\n");
 }

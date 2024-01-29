@@ -155,8 +155,8 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
      * Extract output from 4 scales
      */
 
-    BoxVec objects;
-    create_box_vector(&objects, 50);
+    BoxVec proposals;
+    create_box_vector(&proposals, 50);
     const char* outputs[] = {"dis8", "cls8", "dis16", "cls16", "dis32", "cls32", "dis64", "cls64"};
     int strides[] = {8, 16, 32, 64};
     for (int i = 0;i < 4; i++)
@@ -165,39 +165,37 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
         ncnn_mat_t out_mat_cls;
         ncnn_extractor_extract(ex, outputs[i * 2], &out_mat_dis);
         ncnn_extractor_extract(ex, outputs[i * 2 + 1], &out_mat_cls);   
-        printf("\nOutput matrix(%s): \n", outputs[i * 2]);
-        print_mat(out_mat_dis);
-        printf("Output matrix(%s): \n", outputs[i * 2 + 1]);
-        print_mat(out_mat_cls);
-
-        generate_proposals(out_mat_dis, out_mat_cls, strides[i], 0.4, &objects); // prob thresh 0.4
+        generate_proposals(out_mat_dis, out_mat_cls, strides[i], 0.4f, &proposals); // prob thresh 0.4
 
         ncnn_mat_destroy(out_mat_dis);
         ncnn_mat_destroy(out_mat_cls);
     }
 
-    objects.fit(&objects);
+    proposals.fit(&proposals);
 
-    if (objects.num_item > 2)
+    if (proposals.num_item > 2)
     {
-        qsort_descent_inplace(&objects, 0, objects.num_item - 1);
+        qsort_descent_inplace(&proposals, 0, proposals.num_item - 1);
     }
 
-    int picked_box_idx[objects.num_item];
-    int num_picked = nms(&objects, picked_box_idx, 0.5);
+    int picked_box_idx[proposals.num_item];
+    int num_picked = nms(&proposals, picked_box_idx, 0.5f); // nms thresh 0.5
 
     
+    BoxVec objects;
+    create_box_vector(&objects, num_picked);
+    
+    for (int i=0; i < num_picked; i++)
+    {
+        objects.push_back(proposals.getItem(i, &proposals), &objects);
+    }
 
     // Clean up
+    proposals.free(&proposals);
     ncnn_allocator_destroy(allocator);
     ncnn_option_destroy(opt);
     ncnn_extractor_destroy(ex);
     ncnn_mat_destroy(mat_pad);
-    // ncnn_net_destroy(net);
 
-    // BoxInfo obj = objects[3];
-    // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
-
-    // objects.fit(&objects);
     return objects;
 }
