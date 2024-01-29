@@ -18,8 +18,16 @@ void create_box_vector(BoxVec *box_vector, size_t capacity)
 BoxInfo BoxVec_getItem(size_t index, void *self_ptr)
 {
     BoxVec *boxVec = (BoxVec *) self_ptr;
-    // BoxInfo *data = (BoxInfo *) boxVec->data;
-    return boxVec->data[index];
+    if (index < boxVec->num_item && index >= 0)
+    {
+        return boxVec->data[index];
+    }
+    else
+    {
+        printf("Index out of range\n");
+        return boxVec->data[boxVec->num_item - 1];
+    }
+
 }
 
 BoxInfo BoxVec_pop(void *self_ptr)
