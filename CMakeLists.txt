@@ -5,13 +5,14 @@ project(capi VERSION 0.1.0 LANGUAGES C CXX)
 add_subdirectory(src/detector)
 
 
-file(GLOB SOURCES src/*)
-add_executable(capi ${SOURCES})
+add_executable(capi src/main.c)
 target_include_directories(capi PRIVATE src)
 target_link_libraries(capi detkit)
-# set(ncnn_DIR ../../cpp_libs/ncnn-20240102-full-source/build/install/lib/cmake/ncnn)
-# find_package(ncnn REQUIRED)
-# target_link_libraries(capi ncnn)
+
+add_executable(vec src/vec_testing.c)
+target_include_directories(vec PRIVATE src)
+target_link_libraries(vec detkit)
+
 
 find_package(OpenMP)
 if (OPENMP_FOUND)

@@ -49,7 +49,7 @@ BoxInfo BoxVec_pop(void *self_ptr)
     }
 }
 
-/*TODO*/
+/*TODO -- BoxVec_remove*/
 
 void BoxVec_push_back(BoxInfo item, void *self_ptr)
 {
@@ -76,6 +76,8 @@ void BoxVec_push_back(BoxInfo item, void *self_ptr)
         boxVec->num_item++;
     }
 }
+
+/*TODO -- BoxVec_insert*/
 
 
 float fast_exp(float x)
