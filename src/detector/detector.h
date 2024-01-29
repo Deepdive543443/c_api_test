@@ -84,6 +84,7 @@ int activation_function_softmax_inplace(float *src, int length);
 
 void qsort_descent_inplace(BoxVec *objects, int left, int right);
 float intersection(BoxInfo *box1, BoxInfo *box2);
+int nms(BoxVec *objects, int *idx, float thresh);
 
 /**
  * Todo -- Nanodet's modules

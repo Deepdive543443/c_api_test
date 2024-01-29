@@ -183,6 +183,10 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
         qsort_descent_inplace(&objects, 0, objects.num_item - 1);
     }
 
+    int picked_box_idx[objects.num_item];
+    int num_picked = nms(&objects, picked_box_idx, 0.5);
+
+    
 
     // Clean up
     ncnn_allocator_destroy(allocator);

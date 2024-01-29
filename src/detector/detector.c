@@ -250,3 +250,47 @@ float intersection(BoxInfo *box1, BoxInfo *box2)
 
     return fmaxf(0, xB - xA) * fmaxf(0, yB - yA);
 }
+
+int nms(BoxVec *objects, int *picked_box_idx, float thresh)
+{
+    int num_picked = 0;
+    float areas[objects->num_item];
+
+
+    // printf("%ld objects->num_item\n", objects->num_item);
+    for (int i = 0; i < objects->num_item; i++)
+    {
+        BoxInfo box = objects->getItem(i, objects);
+        areas[i] = (box.x2 - box.x1) * (box.y2 - box.y1);
+    }
+    // printf("%ld objects->num_item\n", objects->num_item);
+
+    for (int i = 0; i < objects->num_item; i++)
+    {
+        BoxInfo *boxA = &objects->data[i];
+        int keep = 1;
+
+        for (int j=0; j < num_picked; j++)
+        {
+            BoxInfo *boxB = &objects->data[picked_box_idx[j]];
+
+            float inter_area = intersection(boxA, boxB);
+            float union_area = areas[i] + areas[picked_box_idx[j]] - inter_area;
+
+            if (inter_area / union_area > thresh) keep = 0;
+        }
+
+        if (keep == 1)
+        {
+            picked_box_idx[num_picked] = i;
+            num_picked++;
+        }
+    }
+
+    // for (int i = num_picked; i < objects->num_item; i++)
+    // {
+    //     picked_box_idx[i] = objects->num_item;
+    //     // printf("%d ", picked_box_idx[i]);
+    // }
+    return num_picked;
+}
