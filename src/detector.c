@@ -48,7 +48,7 @@ void BoxVec_push_back(BoxInfo item, void *self_ptr)
     size_t num_item = boxVec->num_item;
     if (boxVec->capacity == boxVec->num_item)
     {
-        void *data_ptr = realloc(boxVec->data, boxVec->capacity * 2);
+        void *data_ptr = realloc(boxVec->data, sizeof(BoxInfo) * (boxVec->capacity + 20));
         if (data_ptr == NULL)
         {
             printf("Ran out of mem\n");
@@ -57,7 +57,7 @@ void BoxVec_push_back(BoxInfo item, void *self_ptr)
         {
             boxVec->data = (BoxInfo *) data_ptr;
             boxVec->data[boxVec->num_item] = item;
-            boxVec->capacity *= 2;
+            boxVec->capacity += 20;
             boxVec->num_item++;
         }
     }
