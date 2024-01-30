@@ -27,20 +27,50 @@ int main(int argc, char** argv)
      * Create nanodet
      * 
      */
-    Detector nanodet = create_nanodet(target_size, "../asset/nanodet-plus-m_416_int8.param", "../asset/nanodet-plus-m_416_int8.bin");
-    BoxVec objects = nanodet.detect(pixels, width, height, &nanodet);
-    printf("Detected %ld items: \n", objects.num_item);
-    for (int i=0; i < objects.num_item; i++)
     {
-        BoxInfo box = objects.getItem(i, &objects);
-        printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+        unsigned char *pixels_cpy = (unsigned char *) malloc(sizeof(unsigned char) * width * height * n);
+        memcpy(pixels_cpy, pixels, sizeof(unsigned char) * width * height * n);
+        Detector nanodet = create_nanodet(target_size, "../asset/nanodet-plus-m_416_int8.param", "../asset/nanodet-plus-m_416_int8.bin");
+        BoxVec objects = nanodet.detect(pixels_cpy, width, height, &nanodet);
+        printf("Detected %ld items: \n", objects.num_item);
+        for (int i=0; i < objects.num_item; i++)
+        {
+            BoxInfo box = objects.getItem(i, &objects);
+            printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+        }
+
+        draw_boxxes(pixels_cpy, width, height, &objects);
+        stbi_write_png("test_output.png", width, height, 3, pixels_cpy, width * 3);
+        free(pixels_cpy);
+
+        destroy_detector(&nanodet);
+        objects.free(&objects);
+    }
+  
+    /**
+     * Create FastestDet
+     * 
+     */
+    {
+        unsigned char *pixels_cpy = (unsigned char *) malloc(sizeof(unsigned char) * width * height * n);
+        memcpy(pixels_cpy, pixels, sizeof(unsigned char) * width * height * n);
+        Detector fastestdet = create_fastestdet(352, "../asset/FastestDet.param", "../asset/FastestDet.bin");
+        BoxVec objects = fastestdet.detect(pixels_cpy, width, height, &fastestdet);
+        printf("Detected %ld items: \n", objects.num_item);
+        for (int i=0; i < objects.num_item; i++)
+        {
+            BoxInfo box = objects.getItem(i, &objects);
+            printf("%f %f %f %f %f %d\n", box.x1, box.x2, box.y1, box.y2, box.prob, box.label);
+        }
+
+        draw_boxxes(pixels_cpy, width, height, &objects);
+        stbi_write_png("test_output_fastest.png", width, height, 3, pixels_cpy, width * 3);
+        free(pixels_cpy);
+
+        destroy_detector(&fastestdet);
+        objects.free(&objects);
     }
 
-    draw_boxxes(pixels, width, height, &objects);
-    stbi_write_png("test_output.png", width, height, 3, pixels, width * 3);
-    free(pixels);
-
-    destroy_detector(&nanodet);
 
     printf("\nNANODET TEST\n\n");
 }
