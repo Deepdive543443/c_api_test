@@ -78,8 +78,8 @@ Detector create_nanodet(int input_size, const char* param, const char* bin)
     // nanodet.self = &nanodet;
 
     nanodet.net = ncnn_net_create();
-    ncnn_net_load_param(nanodet.net, "../asset/nanodet-plus-m_416_int8.param");
-    ncnn_net_load_model(nanodet.net, "../asset/nanodet-plus-m_416_int8.bin");
+    ncnn_net_load_param(nanodet.net, param);
+    ncnn_net_load_model(nanodet.net, bin);
 
     nanodet.input_size = input_size;
     nanodet.mean_vals[0] = 103.53f;
