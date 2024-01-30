@@ -289,3 +289,35 @@ int nms(BoxVec *objects, int *picked_box_idx, float thresh)
 
     return num_picked;
 }
+
+void draw_boxxes(unsigned char *pixels, int pixel_w, int pixel_h, BoxVec *objects)
+{
+    for (size_t i =0; i < objects->num_item; i++)
+    {
+        BoxInfo box = objects->getItem(i, objects);
+        color.r = color_list[i][0];
+        color.g = color_list[i][1];
+        color.b = color_list[i][2];
+        color.a = 255;
+        ncnn_draw_rectangle_c3(
+            pixels, 
+            pixel_w, 
+            pixel_h, 
+            box.x1, 
+            box.y1, 
+            box.x2 - box.x1, 
+            box.y2 - box.y1, 
+            color.rgba, 3
+        );
+        ncnn_draw_text_c3(
+            pixels,
+            pixel_w, 
+            pixel_h,
+            class_names[box.label],
+            (int) box.x1 + 1, 
+            (int) box.y1 + 1,
+            7,
+            (int) color.rgba
+        );
+    }
+}
