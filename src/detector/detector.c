@@ -292,6 +292,17 @@ int nms(BoxVec *objects, int *picked_box_idx, float thresh)
 
 void draw_boxxes(unsigned char *pixels, int pixel_w, int pixel_h, BoxVec *objects)
 {
+    union 
+    {
+        struct
+        {
+            __uint8_t r;
+            __uint8_t g;
+            __uint8_t b;
+            __uint8_t a;
+        };
+        __uint32_t rgba;
+    } color;
     for (size_t i =0; i < objects->num_item; i++)
     {
         BoxInfo box = objects->getItem(i, objects);

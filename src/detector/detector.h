@@ -6,18 +6,6 @@
 
 #include "c_api.h"
 
-union 
-{
-    struct
-    {
-        __uint8_t r;
-        __uint8_t g;
-        __uint8_t b;
-        __uint8_t a;
-    };
-    __uint32_t rgba;
-} color;
-
 
 static const char* class_names[] = {
     "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
