@@ -32,7 +32,7 @@ int main(int argc, char** argv)
         memcpy(pixels_cpy, pixels, sizeof(unsigned char) * width * height * n);
         Detector nanodet = create_nanodet(target_size, "../asset/nanodet-plus-m_416_int8.param", "../asset/nanodet-plus-m_416_int8.bin");
         BoxVec objects = nanodet.detect(pixels_cpy, width, height, &nanodet);
-        printf("Detected %ld items: \n", objects.num_item);
+        printf("\n(Nanodet) Detected %ld items: \n", objects.num_item);
         for (int i=0; i < objects.num_item; i++)
         {
             BoxInfo box = objects.getItem(i, &objects);
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
         memcpy(pixels_cpy, pixels, sizeof(unsigned char) * width * height * n);
         Detector fastestdet = create_fastestdet(352, "../asset/FastestDet.param", "../asset/FastestDet.bin");
         BoxVec objects = fastestdet.detect(pixels_cpy, width, height, &fastestdet);
-        printf("Detected %ld items: \n", objects.num_item);
+        printf("\n(FastestDet) Detected %ld items: \n", objects.num_item);
         for (int i=0; i < objects.num_item; i++)
         {
             BoxInfo box = objects.getItem(i, &objects);
