@@ -123,23 +123,17 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
     ncnn_allocator_t allocator = ncnn_allocator_create_pool_allocator();
 
     ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixels, NCNN_MAT_PIXEL_BGR, pixel_w, pixel_h, pixel_w * 3, w, h, allocator);
-    printf("Input matrix: \n");
-    print_mat(mat);
 
     ncnn_mat_t mat_pad = ncnn_mat_create();
     ncnn_option_t opt = ncnn_option_create();
     ncnn_copy_make_border(mat, mat_pad, hpad / 2, hpad - hpad / 2, wpad / 2, wpad - wpad / 2, NCNN_BORDER_CONSTANT, 0.f, opt);
     ncnn_mat_destroy(mat);
 
-    ncnn_mat_substract_mean_normalize(mat_pad, self->mean_vals, self->norm_vals);
-    printf("\nPadded input matrix: \n");
-    print_mat(mat_pad);
-    
-
     /**
      * Create the extractor
      */
 
+    ncnn_mat_substract_mean_normalize(mat_pad, self->mean_vals, self->norm_vals);
     ncnn_extractor_t ex = ncnn_extractor_create(self->net);
     ncnn_extractor_input(ex, "data", mat_pad);
 
