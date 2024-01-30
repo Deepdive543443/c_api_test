@@ -197,6 +197,7 @@ float intersection(BoxInfo *box1, BoxInfo *box2);
 int nms(BoxVec *objects, int *idx, float thresh);
 
 void draw_boxxes(unsigned char *pixels, int pixel_w, int pixel_h, BoxVec *objects);
+void destroy_detector(Detector *det);
 
 /**
  * -- Nanodet's modules
@@ -204,7 +205,6 @@ void draw_boxxes(unsigned char *pixels, int pixel_w, int pixel_h, BoxVec *object
 
 Detector create_nanodet(int input_size);
 BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *self_ptr);
-
 
 /**
  * Todo -- FastestDet's modules

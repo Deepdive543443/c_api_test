@@ -1,6 +1,5 @@
 #include "stdio.h"
 #include "stdlib.h"
-#include "c_api.h"
 
 #include "detector/detector.h"
 
@@ -40,6 +39,8 @@ int main(int argc, char** argv)
     draw_boxxes(pixels, width, height, &objects);
     stbi_write_png("test_output.png", width, height, 3, pixels, width * 3);
     free(pixels);
+
+    destroy_detector(&nanodet);
 
     printf("\nNANODET TEST\n\n");
 }

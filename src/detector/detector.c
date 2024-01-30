@@ -321,3 +321,8 @@ void draw_boxxes(unsigned char *pixels, int pixel_w, int pixel_h, BoxVec *object
         );
     }
 }
+
+void destroy_detector(Detector *det)
+{
+    ncnn_net_destroy(det->net);
+}
