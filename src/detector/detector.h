@@ -8,8 +8,8 @@
 
 
 /**
- * @here we go again https://stackoverflow.com/questions/4694401/how-to-replicate-vector-in-c
- * TODO -- Dynamic array of boxxes
+ * @ https://stackoverflow.com/questions/4694401/how-to-replicate-vector-in-c
+ *  -- Dynamic array of boxxes
  */
 
 typedef struct
@@ -74,7 +74,7 @@ typedef struct
 
 
 /**
- * Todo -- General function that share with all detector
+ * -- General function that share with all detector
  */
 
 float fast_exp(float x);
@@ -87,7 +87,7 @@ float intersection(BoxInfo *box1, BoxInfo *box2);
 int nms(BoxVec *objects, int *idx, float thresh);
 
 /**
- * Todo -- Nanodet's modules
+ * -- Nanodet's modules
  */
 
 Detector create_nanodet(int input_size);

@@ -1,12 +1,10 @@
 #include "detector.h"
 
-// #define STB_DS_IMPLEMENTATION
-// #include "stb_ds.h"
 
-void print_mat(ncnn_mat_t mat)
-{
-    printf("w: %d\nh: %d\nc: %d\nelesize: %ld\ncstep: %ld\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
-}
+// void print_mat(ncnn_mat_t mat)
+// {
+//     printf("w: %d\nh: %d\nc: %d\nelesize: %ld\ncstep: %ld\n", ncnn_mat_get_w(mat), ncnn_mat_get_h(mat), ncnn_mat_get_c(mat), ncnn_mat_get_elemsize(mat), ncnn_mat_get_cstep(mat));
+// }
 
 static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int stride, float prob_thresh, BoxVec *objects)
 {
@@ -68,13 +66,9 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                 obj.label = max_label;
 
                 objects->push_back(obj, objects);
-                // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
             }
         }
     }
-
-    // BoxInfo obj = objects[0];
-    // printf("%f %f %f %f %f %d\n", objects[0].x1, objects[0].x2, objects[0].y1, objects[0].y2, objects[0].prob, objects[0].label);
 }
 
 
@@ -128,7 +122,7 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
 
     ncnn_allocator_t allocator = ncnn_allocator_create_pool_allocator();
 
-    ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixels, NCNN_MAT_PIXEL_RGB, pixel_w, pixel_h, pixel_w * 3, w, h, allocator);
+    ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixels, NCNN_MAT_PIXEL_BGR, pixel_w, pixel_h, pixel_w * 3, w, h, allocator);
     printf("Input matrix: \n");
     print_mat(mat);
 
@@ -169,8 +163,11 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
         ncnn_mat_destroy(out_mat_cls);
     }
 
-    proposals.fit(&proposals);
+    /**
+     * Sort, non-max supression
+     */
 
+    proposals.fit(&proposals);
     if (proposals.num_item > 2)
     {
         qsort_descent_inplace(&proposals, 0, proposals.num_item - 1);
@@ -179,6 +176,9 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
     int picked_box_idx[proposals.num_item];
     int num_picked = nms(&proposals, picked_box_idx, 0.5f); // nms thresh 0.5
 
+    /**
+     * Scale back and shift
+     */
     
     BoxVec objects;
     create_box_vector(&objects, num_picked);

@@ -114,7 +114,7 @@ const int color_list[80][3] =
 
 int main(int argc, char** argv)
 {
-        union 
+    union 
     {
         struct
         {
@@ -127,15 +127,11 @@ int main(int argc, char** argv)
     } color;
     int target_size = 416;
 
-    // Allocate pixel
-    // unsigned char *pixel = malloc(sizeof(unsigned char) * 320 * 320 * 3);
-    // memset(pixel, 255, 320 * 320 * 3); // White image 
-
     /**
      * Load image using stb image
      */
     int width, height, n;
-    const char *file = "../asset/2.png";
+    const char *file = "../asset/2.jpg";
     unsigned char *pixels = stbi_load(file, &width, &height, &n, 0);
     printf("%d %d %d\n", width, height, n);
 

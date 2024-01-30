@@ -287,10 +287,5 @@ int nms(BoxVec *objects, int *picked_box_idx, float thresh)
         }
     }
 
-    // for (int i = num_picked; i < objects->num_item; i++)
-    // {
-    //     picked_box_idx[i] = objects->num_item;
-    //     // printf("%d ", picked_box_idx[i]);
-    // }
     return num_picked;
 }
