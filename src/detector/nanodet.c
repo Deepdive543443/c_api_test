@@ -72,7 +72,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
 }
 
 
-Detector create_nanodet(int input_size)
+Detector create_nanodet(int input_size, const char* param, const char* bin)
 {
     Detector nanodet;
     // nanodet.self = &nanodet;
