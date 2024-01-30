@@ -25,7 +25,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
     {
         for(int j=0; j < num_grid_x; j++)
         {
-            float *score_ptr = &cls_data[i * num_grid_y + j];
+            float *score_ptr = &cls_data[i * num_grid_x + j];
             float max_score = -FLT_MAX;
             int max_label = -1;
 
@@ -42,7 +42,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
             if (max_score >= prob_thresh)
             {
                 float pred_ltrb[4];
-                float *dis_ptr = &dis_data[(j * num_grid_y) + (i * hstep_dis)];
+                float *dis_ptr = &dis_data[(j * reg_max_1 * 4) + (i * hstep_dis)];
                 for (int k=0; k < 4; k++)
                 {
                     float dis = 0.f;
@@ -68,6 +68,7 @@ static void generate_proposals(ncnn_mat_t dis_pred, ncnn_mat_t cls_pred, int str
                 obj.label = max_label;
 
                 objects->push_back(obj, objects);
+                // printf("%f %f %f %f %f %d\n", obj.x1, obj.x2, obj.y1, obj.y2, obj.prob, obj.label);
             }
         }
     }
@@ -121,16 +122,13 @@ BoxVec nanodet_detect(unsigned char *pixels, int pixel_w, int pixel_h, void *sel
     int wpad = (w + 31) / 32 * 32 - w;
     int hpad = (h + 31) / 32 * 32 - h;
 
-    printf("%d %d %f\n", w, h, scale);
-    printf("%d %d\n", w + wpad, h + hpad);
-
     /**
      * Create the NCNN matirx using pixels data
      */
 
     ncnn_allocator_t allocator = ncnn_allocator_create_pool_allocator();
 
-    ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixels, NCNN_MAT_PIXEL_BGR, pixel_w, pixel_h, pixel_w * 3, w, h, allocator);
+    ncnn_mat_t mat = ncnn_mat_from_pixels_resize(pixels, NCNN_MAT_PIXEL_RGB, pixel_w, pixel_h, pixel_w * 3, w, h, allocator);
     printf("Input matrix: \n");
     print_mat(mat);
 

@@ -135,7 +135,7 @@ int main(int argc, char** argv)
      * Load image using stb image
      */
     int width, height, n;
-    const char *file = "../asset/3.jpg";
+    const char *file = "../asset/2.png";
     unsigned char *pixels = stbi_load(file, &width, &height, &n, 0);
     printf("%d %d %d\n", width, height, n);
 
