@@ -27,7 +27,7 @@ int main(int argc, char** argv)
      * Create nanodet
      * 
      */
-    Detector nanodet = create_nanodet(target_size);
+    Detector nanodet = create_nanodet(target_size, "../asset/nanodet-plus-m_416_int8.param", "../asset/nanodet-plus-m_416_int8.bin");
     BoxVec objects = nanodet.detect(pixels, width, height, &nanodet);
     printf("Detected %ld items: \n", objects.num_item);
     for (int i=0; i < objects.num_item; i++)
